@@ -1,25 +1,29 @@
-const express = require('express')
+import express from "express";
+import ctrl from "../../controllers/contacts.js";
+import contactSchema from "../../schemas/contactAddSchema.js";
+import isEmptyReq from "../../middlewares/isEmptyReq.js";
+import validateRequestBody from "../../middlewares/validateRequestBody.js";
 
-const router = express.Router()
+const contactsRouter = express.Router();
 
-router.get('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+contactsRouter.get("/", ctrl.getAllContacts);
 
-router.get('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+contactsRouter.get("/:id", ctrl.getById);
 
-router.post('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+contactsRouter.post(
+  "/",
+  isEmptyReq,
+  validateRequestBody(contactSchema),
+  ctrl.addNewContact
+);
 
-router.delete('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+contactsRouter.delete("/:id", ctrl.deleteContactById);
 
-router.put('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+contactsRouter.put(
+  "/:id",
+  isEmptyReq,
+  validateRequestBody(contactSchema),
+  ctrl.updateContactById
+);
 
-module.exports = router
+export default contactsRouter;
