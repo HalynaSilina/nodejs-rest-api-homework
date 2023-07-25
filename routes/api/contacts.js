@@ -5,7 +5,7 @@ import {
   isEmptyReq,
   validateRequestBody,
   isValidId,
-  isEmptyFavorite
+  isEmptyFavorite,
 } from "../../middlewares/index.js";
 
 const contactsRouter = express.Router();
