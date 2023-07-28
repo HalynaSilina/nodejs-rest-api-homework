@@ -13,8 +13,8 @@ const signup = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (user) throw HttpError(409, "Email in use");
-  const hashPass = bcript.hash(password, 10);
-  const newUser = await User.create(...req.body, hashPass);
+  const hashPass = await bcript.hash(password, 10);
+  const newUser = await User.create({ ...req.body, password: hashPass });
   res.status(201).json({
     user: {
       email: newUser.email,
@@ -27,13 +27,15 @@ const signin = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) throw HttpError(401, "Email or password is wrong");
-  const comparePass = bcript.compare(password, user.password);
+  console.log(password);
+  console.log(user.password);
+  const comparePass = await bcript.compare(password, user.password);
   if (!comparePass) throw HttpError(401, "Email or password is wrong");
   const payload = {
     id: user._id,
   };
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1d" });
-  await User.findByIdAndUpdate(user._id, {token});
+  await User.findByIdAndUpdate(user._id, { token });
 
   res.status(200).json({
     token: token,
@@ -42,18 +44,18 @@ const signin = async (req, res) => {
       subscription: user.subscription,
     },
   });
-};
+};  
 
-const getCurrent = (req, res) => {
-  const { email } = req.user;
-  res.status(200).json({ email });
+const getCurrent = async (req, res) => {
+  const { email, subscription } = req.user;
+  res.status(200).json({ email, subscription });
 };
 
 const logout = async (req, res) => {
-  const {_id} = req.user;
-  await User.findByIdAndUpdate(_id, {token: ""});
+  const { _id } = req.user;
+  await User.findByIdAndUpdate(_id, { token: "" });
 
-  res.status(204);
+  res.status(204).send();
 };
 
 export default {
