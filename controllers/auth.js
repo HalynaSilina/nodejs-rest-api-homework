@@ -1,5 +1,5 @@
 import bcript from "bcryptjs";
-import { Jwt } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import User from "../models/user.js";
 import HttpError from "../utils/index.js";
@@ -32,7 +32,9 @@ const signin = async (req, res) => {
   const payload = {
     id: user._id,
   };
-  const token = Jwt.sign(payload, JWT_SECRET, { expiresIn: "1d" });
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1d" });
+  await User.findByIdAndUpdate(user._id, {token});
+
   res.status(200).json({
     token: token,
     user: {
@@ -42,7 +44,21 @@ const signin = async (req, res) => {
   });
 };
 
+const getCurrent = (req, res) => {
+  const { email } = req.user;
+  res.status(200).json({ email });
+};
+
+const logout = async (req, res) => {
+  const {_id} = req.user;
+  await User.findByIdAndUpdate(_id, {token: ""});
+
+  res.status(204);
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
+  getCurrent: ctrlWrapper(getCurrent),
+  logout: ctrlWrapper(logout),
 };
