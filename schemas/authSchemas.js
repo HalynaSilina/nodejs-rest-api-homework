@@ -9,8 +9,15 @@ const userSchema = Joi.object({
   password: Joi.string().required().min(6).max(12).messages({
     "any.required": "missing required password field",
     "string.min": "password length must be at least 6 characters long",
-    "string.max": "password length must be less than or equal to 12 characters long",
+    "string.max":
+      "password length must be less than or equal to 12 characters long",
   }),
 });
 
-export default userSchema;
+const updateSubscriptionSchema = Joi.object({
+  subscription: Joi.string().required().messages({
+    "any.required": "invalid subscription type",
+  }),
+});
+
+export default { userSchema, updateSubscriptionSchema };

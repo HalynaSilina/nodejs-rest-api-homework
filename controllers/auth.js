@@ -44,7 +44,7 @@ const signin = async (req, res) => {
       subscription: user.subscription,
     },
   });
-};  
+};
 
 const getCurrent = async (req, res) => {
   const { email, subscription } = req.user;
@@ -58,9 +58,18 @@ const logout = async (req, res) => {
   res.status(204).send();
 };
 
+const updateSubscription = async (req, res) => {
+  const { id } = req.user;
+  const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true });
+  res
+    .status(200)
+    .json({ email: updatedUser.email, subscription: updatedUser.subscription });
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
+  updateSubscription: ctrlWrapper(updateSubscription),
 };
