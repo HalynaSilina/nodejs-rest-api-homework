@@ -13,7 +13,7 @@ const authRouter = express.Router();
 authRouter.post(
   "/register",
   isEmptyReq,
-  validateRequestBody(schema),
+  validateRequestBody(schema.userSchema),
   ctrl.signup
 );
 
