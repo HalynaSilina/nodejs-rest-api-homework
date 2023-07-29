@@ -5,10 +5,13 @@ import {
   isEmptyReq,
   validateRequestBody,
   isValidId,
-  isEmptyFavorite
+  isEmptyFavorite,
+  authenticate, 
 } from "../../middlewares/index.js";
 
 const contactsRouter = express.Router();
+
+contactsRouter.use(authenticate);
 
 contactsRouter.get("/", ctrl.getAllContacts);
 
