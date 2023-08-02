@@ -1,3 +1,5 @@
+
+import fs from "fs/promises";
 import Contact from "../models/contact.js";
 import HttpError from "../utils/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
@@ -19,6 +21,7 @@ const getById = async (req, res) => {
   if (!result) throw HttpError(404);
   res.json(result);
 };
+
 
 const addNewContact = async (req, res) => {
   const { _id: owner } = req.user;
