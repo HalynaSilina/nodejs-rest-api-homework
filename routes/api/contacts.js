@@ -7,6 +7,7 @@ import {
   isValidId,
   isEmptyFavorite,
   authenticate, 
+  upload
 } from "../../middlewares/index.js";
 
 const contactsRouter = express.Router();
@@ -19,6 +20,7 @@ contactsRouter.get("/:id", isValidId, ctrl.getById);
 
 contactsRouter.post(
   "/",
+  upload.single("avatar"),
   isEmptyReq,
   validateRequestBody(schema.contactSchema),
   ctrl.addNewContact

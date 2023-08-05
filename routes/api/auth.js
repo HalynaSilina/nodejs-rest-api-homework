@@ -6,6 +6,7 @@ import {
   validateRequestBody,
   isSubscription,
   authenticate,
+  upload,
 } from "../../middlewares/index.js";
 
 const authRouter = express.Router();
@@ -35,5 +36,7 @@ authRouter.patch(
   validateRequestBody(schema.updateSubscriptionSchema),
   ctrl.updateSubscription
 );
+
+authRouter.patch("/avatars", authenticate, upload.single("avatar"), ctrl.updateAvatar)
 
 export default authRouter;
