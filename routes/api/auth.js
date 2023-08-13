@@ -18,6 +18,8 @@ authRouter.post(
   ctrl.signup
 );
 
+authRouter.get("/verify/:verificationToken", ctrl.verify);
+
 authRouter.post(
   "/login",
   isEmptyReq,

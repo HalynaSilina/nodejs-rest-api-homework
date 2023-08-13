@@ -1,17 +1,19 @@
-
-import fs from "fs/promises";
 import Contact from "../models/contact.js";
-import HttpError from "../utils/index.js";
+import { HttpError } from "../utils/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 
 const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
   const { page = 1, limit = 10, ...query } = req.query;
   const skip = (page - 1) * limit;
-  const result = await Contact.find({ owner, ...query }, "-createdAt -updatedAt", {
-    skip,
-    limit,
-  });
+  const result = await Contact.find(
+    { owner, ...query },
+    "-createdAt -updatedAt",
+    {
+      skip,
+      limit,
+    }
+  );
   res.json(result);
 };
 
@@ -21,7 +23,6 @@ const getById = async (req, res) => {
   if (!result) throw HttpError(404);
   res.json(result);
 };
-
 
 const addNewContact = async (req, res) => {
   const { _id: owner } = req.user;
