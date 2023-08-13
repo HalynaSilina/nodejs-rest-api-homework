@@ -3,27 +3,39 @@ import path from "path";
 import fs from "fs/promises";
 import Jimp from "jimp";
 import jwt from "jsonwebtoken";
+import { nanoid } from "nanoid";
 import dotenv from "dotenv";
 import gravatar from "gravatar";
 import User from "../models/user.js";
-import HttpError from "../utils/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
+import {HttpError, sendEmail} from "../utils/index.js";
+
 
 dotenv.config();
 
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET, BASE_URL } = process.env;
 
 const signup = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (user) throw HttpError(409, "Email in use");
   const hashPass = await bcript.hash(password, 10);
+  const verificationToken = nanoid();
   const avatarURL = gravatar.url(email);
   const newUser = await User.create({
     ...req.body,
     password: hashPass,
     avatarURL,
+    verificationToken,
   });
+  const verifyEmail = {
+    to: email,
+    subject: "Email verification",
+    html: `<a target="_blank" href="${BASE_URL}/users/verify/:${verificationToken}">Verify your email</a>`,
+  };
+
+  await sendEmail(verifyEmail);
+
   res.status(201).json({
     user: {
       email: newUser.email,
