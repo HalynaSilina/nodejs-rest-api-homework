@@ -5,3 +5,4 @@ export {default as isEmptyFavorite} from "./isEmptyFavorite.js";
 export {default as authenticate} from "./authenticate.js";
 export {default as isSubscription} from "./isSubscription.js";
 export {default as upload} from "./upload.js";
+export {default as isEmptyEmailField} from "./isEmptyEmailField.js";

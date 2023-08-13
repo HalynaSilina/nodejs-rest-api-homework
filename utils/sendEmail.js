@@ -19,8 +19,7 @@ const transport = nodemailer.createTransport(nodemailerConfig);
 
 const sendEmail = async(data) => {
     const email = {...data, from: EMAIL};
-    const res = await transport.sendMail(email);
-    return res;
+    return transport.sendMail(email);
 }
 
 export default sendEmail;

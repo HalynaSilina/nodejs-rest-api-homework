@@ -7,6 +7,7 @@ import {
   isSubscription,
   authenticate,
   upload,
+  isEmptyEmailField,
 } from "../../middlewares/index.js";
 
 const authRouter = express.Router();
@@ -19,6 +20,13 @@ authRouter.post(
 );
 
 authRouter.get("/verify/:verificationToken", ctrl.verify);
+
+authRouter.post(
+  "/verify",
+  isEmptyEmailField,
+  validateRequestBody(schema.validateEmailShema),
+  ctrl.resendEmail
+);
 
 authRouter.post(
   "/login",
@@ -39,6 +47,11 @@ authRouter.patch(
   ctrl.updateSubscription
 );
 
-authRouter.patch("/avatars", authenticate, upload.single("avatar"), ctrl.updateAvatar)
+authRouter.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatar"),
+  ctrl.updateAvatar
+);
 
 export default authRouter;

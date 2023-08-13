@@ -24,7 +24,7 @@ const signup = async (req, res) => {
     ...req.body,
     password: hashPass,
     avatarURL,
-    verificationToken
+    verificationToken,
   });
   const verifyEmail = {
     to: email,
@@ -46,12 +46,29 @@ const verify = async (req, res) => {
   const { verificationToken } = req.params;
   const user = await User.findOne({ verificationToken });
   if (!user) throw HttpError(404, "User not found");
- await User.findByIdAndUpdate(user._id, {
+  await User.findByIdAndUpdate(user._id, {
     verify: true,
-    verificationToken: "",
+    verificationToken: "null",
   });
   res.status(200).json({
     message: "Verification successful",
+  });
+};
+
+const resendEmail = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) throw HttpError(400, "Not found");
+  if (user.verify) throw HttpError(400, "Verification has already been passed");
+  const verifyEmail = {
+    to: email,
+    subject: "Email verification",
+    html: `<a href="${BASE_URL}/users/verify/${user.verificationToken}" target="_blank">Verify your email<a>`,
+  };
+  await sendEmail(verifyEmail);
+
+  res.json({
+    message: "Verification email sent",
   });
 };
 
@@ -123,4 +140,5 @@ export default {
   updateSubscription: ctrlWrapper(updateSubscription),
   updateAvatar: ctrlWrapper(updateAvatar),
   verify: ctrlWrapper(verify),
+  resendEmail: ctrlWrapper(resendEmail),
 };
