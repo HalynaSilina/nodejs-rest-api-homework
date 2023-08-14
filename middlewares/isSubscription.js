@@ -1,4 +1,4 @@
-import HttpError from "../utils/index.js";
+import {HttpError} from "../utils/index.js";
 
 const isSubscription = (req, res, next) => {
   if (Object.keys(req.body).length === 0)
